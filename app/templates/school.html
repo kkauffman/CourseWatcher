@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block body %}
+    <div class="container">
+      <div class="jumbotron text-center">
+	  <h1>Welcome to UC Course Watcher</h1>
+          <p class="lead">Didn't get your classes? Choose your school and the course you want to get and we will email you if the course opens!</p>
+	  </br>
+	  <h2>First select your school</h2>
+
+	  {% if form %}
+	    <script>
+	      function school_handler(id) {
+	        document.getElementById("school_id").value=id;
+	        document.getElementById("school_form").submit();
+	      }
+	    </script>
+
+  	    <form id="school_form" action="" method="post">
+	      {{ form.hidden_tag() }}
+	      
+	      <div class="container">
+	      {% for id, school in form.schools %}
+	        
+		      <div class="panel-body" onclick="school_handler({{id}})">
+	                {{ school }}
+		      </div>
+		
+                
+	       {% endfor %}
+	       </div>
+	     </form>
+	  {% endif %}
+
+      </div>
+    </div><!-- /.container -->
+{% endblock %}

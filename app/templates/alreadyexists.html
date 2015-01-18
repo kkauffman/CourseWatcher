@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block body %}
+        {% if course and email %}
+        <h2>You have already requested a notification when <i>{{ course.name }}</i> opens.</h2>
+	<div class="container-fluid">
+	  When the class opens we will be sure to email you at: {{ email }}.
+	</div>
+        {% else %}
+	Opps, we encountered an error!
+        {% endif %}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block body %}
+        <h2>Now choose a department</h2>
+        {% if departments %}
+	<div class="container">
+	{% for some_departments in departments|batch(3) %}
+	  <div class="row row-centered">
+	    {% for department in some_departments %}
+	    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-centered">
+	      <div class="panel panel-default">
+		<div class="panel-body" onclick="window.location.href += '{{ department.name }}';">
+	          {{ department.name }}
+		</div>
+	      </div>
+	    </div>
+	    {% endfor %}
+          </div>	  
+	{% endfor %}
+	</div>
+        {% else %}
+	Opps, an error was encounters!
+        {% endif %}
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block body %}
+        <h2>Now choose a course</h2>
+        {% if courses %}
+	<div class="container">
+	<form action="/email" method="post" id="course_form">
+	  <input type="hidden" value="-1" name="course" id="course">
+	{% for some_courses in courses|batch(3) %}
+	  <div class="row row-centered">
+	    {% for course in some_courses %}
+	    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-centered">
+	      <div class="panel panel-default">
+		<div class="panel-body" onclick="submit_form({{ course.id }});">
+	          {{ course.name }} {{ course.section }} {{ course.number }}
+		</div>
+	      </div>
+	    </div>
+	    {% endfor %}
+          </div>	  
+	{% endfor %}
+	</form>
+	</div>
+        {% else %}
+	Opps, we encountered an error loading the course list!
+        {% endif %}
+
+	<script>
+	  function submit_form(value) {
+	    $("#course")[0].value = value;
+            $("#course_form")[0].submit();
+	  }
+	</script>
+{% endblock %}

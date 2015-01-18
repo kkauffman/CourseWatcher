@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block body %}
+	<h1>Welcome to Course Watcher</h1>
+        <p class="lead">Didn't get your classes? Choose your school and the course you want to get and we will email you if the course opens!</p>
+	<br>
+
+	{% if schools %}
+	<h2>First select your school</h2>
+	<div class="container">
+	  {% for some_schools in schools|batch(3) %}
+	  <div class="row row-centered">
+	    {% for school in some_schools %}
+	    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-centered">
+	      <div class="panel panel-default">
+		<div class="panel-body" onclick="window.location.href += '{{ school.name }}';">
+	          {{ school.name }}
+		</div>
+	      </div>
+	    </div>
+	    {% endfor %}
+          </div>	
+          {% endfor %}
+	</div>
+	{% endif %}
+{% endblock %}

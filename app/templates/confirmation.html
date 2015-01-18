@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block body %}
+        <h2>Check for your confirmation email</h2>
+        {% if course and email %}
+	<div class="container-fluid">
+	  When {{ course.name }} opens we will email you at {{ email }}
+	  Now check your email to ensure the confirmation email did not go into your spam folder.
+	  Then make sure that you will quickly see any emails that get sent to you.
+	  This can be done by enabling push notifications to your phone.
+	</div>
+        {% else %}
+	Opps, we encountered an error confirming your request!
+        {% endif %}
+{% endblock %}
