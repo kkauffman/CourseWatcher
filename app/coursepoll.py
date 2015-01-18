@@ -7,31 +7,32 @@ from app.models import School, Department, Course, CourseRequest
 
 
 class CoursePoll():
+    """ A base class for all school course pollers. """
     create_db = False
     data = {}
     request_data = None
     requests = []
 
-
     def __init__(self, create_db=False):
+        """ Creates the class, if create_db is true all entries are made on database update. """
         self.create_db = create_db
 
-
     def GetCourseData(self):
+        """ Downloads all the school's course data. """
         raise NotImplementedError('Method needs to be overridden!')
-
 
     def ParseData(self):
+        """ Parses the school's course data. """
         raise NotImplementedError('Method needs to be overridden!')
-
 
     def UpdateDatabase(self):
+        """ Updates the database and creates all notifications/requests. """
         raise NotImplementedError('Method needs to be overridden!')
 
-
     def GetCourseRequests(self):
+        """ Returns all course notifications/requests and then clears all stored ones. """
         self.GetCourseData()
-        self.ParseData() 
+        self.ParseData()
         self.UpdateDatabase()
 
         requests = self.requests
@@ -39,21 +40,22 @@ class CoursePoll():
 
         return requests
 
-
     def CreateRequests(self, course):
+        """ Creates a tuple of course notifications/requests and their notification email. """
         requests = CourseRequest.query.filter(CourseRequest.course_id == course.id)
-        
+
         email_msg = '%s has opened!' % (course.name)
         return (requests, email_msg)
 
 
 class UCMCoursePoll(CoursePoll):
+    """ Polls UC Merced for their course data. """
 
     # Parameters to get the list of all classes offered at UC Merced
     url = 'https://pbanssb.ucmerced.edu/pls/PROD/xhwschedule.P_ViewSchedule'
     payload = {'openclasses': 'N', 'subjcode': 'ALL', 'validterm': '201510'}
     headers = {'host': 'pbanssb.ucmerced.edu'}
- 
+
     # In the returned page rows containing course data have this number of columns
     columns_in_table = 13
 
@@ -83,10 +85,8 @@ class UCMCoursePoll(CoursePoll):
     # The data returned from Beautiful Soup
     request_data = None
 
-
     def __init__(self, create_db=False):
         CoursePoll.__init__(self, create_db)
-
 
     def GetCourseData(self):
         r = requests.post(self.url, data=self.payload, headers=self.headers)
@@ -95,7 +95,6 @@ class UCMCoursePoll(CoursePoll):
             raise RuntimeError('Unable to get course data')
 
         self.request_data = BeautifulSoup(r.text)
-
 
     def ParseData(self):
         if self.request_data is None:
@@ -144,7 +143,6 @@ class UCMCoursePoll(CoursePoll):
                 courses.append(course_data)
 
             self.data[department.text] = courses
-
 
     def UpdateDatabase(self):
         if self.data is None:

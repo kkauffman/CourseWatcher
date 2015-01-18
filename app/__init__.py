@@ -16,16 +16,21 @@ default_error = '<b>Opps, it appears something went wrong!</b>'
 celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 TaskBase = celery.Task
+
+
 class ContextTask(TaskBase):
     abstract = True
+
     def __call__(self, *args, **kwargs):
         with app.app_context():
             return TaskBase.__call__(self, *args, **kwargs)
 
 celery.Task = ContextTask
 
+
 @celery.task
 def send_email_updates(poller_name):
+    """ Takes a school name and updates its course data and then sends all open course notifications. """
     requests = UpdateDB(poller_name)
 
     for request in requests:
@@ -36,12 +41,14 @@ def send_email_updates(poller_name):
 
         send_email(emails, request[1], request[1])
 
+
 def send_email(recipients, subject, body):
     msg = Message(subject, sender=app.config['EMAIL_ADDRESS'], recipients=recipients)
     msg.body = body
 
     thr = Thread(target=send_async_email, args=[msg])
     thr.start()
+
 
 def send_async_email(msg):
     with app.app_context():

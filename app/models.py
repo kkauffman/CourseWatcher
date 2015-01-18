@@ -1,6 +1,8 @@
 from app import db
 
+
 class School(db.Model):
+    """ Represents a school. """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), unique=True)
     departments = db.relationship('Department', backref='author',
@@ -9,7 +11,9 @@ class School(db.Model):
     def __repr__(self):
         return '<School %r>' % (self.name)
 
+
 class Department(db.Model):
+    """ Represents a department at a school. """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), unique=True)
     abrv = db.Column(db.String(4), unique=True)
@@ -19,7 +23,9 @@ class Department(db.Model):
     def __repr__(self):
         return '<Department %r>' % (self.name)
 
+
 class Course(db.Model):
+    """ Represents a course and its status. """
     id = db.Column(db.Integer, primary_key=True)
     crn = db.Column(db.Integer())
     name = db.Column(db.String())
@@ -34,10 +40,12 @@ class Course(db.Model):
     def __repr__(self):
         return '<Course %r>' % (self.name)
 
+
 class CourseRequest(db.Model):
+    """ Represents a user submitted request. """
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String())
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
-    
+
     def __repr__(self):
         return '<CourseRequest %r>' % (self.email)

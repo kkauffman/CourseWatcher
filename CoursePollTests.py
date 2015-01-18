@@ -9,9 +9,9 @@ from config import basedir
 
 
 class UCMCoursePollTest(unittest.TestCase):
+    """ Tests the UC Merced course poller by trying to download and parse the data. """
     is_setup = False
     poller = None
-
 
     def setUp(self):
         if not self.is_setup:
@@ -25,19 +25,18 @@ class UCMCoursePollTest(unittest.TestCase):
 
             self.is_setup = True
 
-
     def tearDown(self):
         db.session.remove()
         db.drop_all()
 
-
     def test_real_request(self):
+        """ Attempts to get the course data. """
         self.poller.GetCourseData()
 
         self.assertTrue(self.poller.request_data is not None)
 
-
     def test_sample_data(self):
+        """ Parses sample data downloaded on 1/16/15 and checks if it creates the correct requests. """
         tmp = self.poller.request_data
 
         self.poller.request_data = self.test_data
@@ -57,10 +56,10 @@ class UCMCoursePollTest(unittest.TestCase):
         self.assertTrue(courses[0]['title'] == 'Elementary Chinese I',
                         'Found title %s' % (courses[0]['title']))
         self.assertFalse(courses[1]['open'])
-        
+
         self.poller.UpdateDatabase()
         course = Course.query.filter_by(crn=10701).first()
-        db.session.add(CourseRequest(email='test', course_id = course.id))
+        db.session.add(CourseRequest(email='test', course_id=course.id))
         self.poller.data['Chinese'][1]['open'] = True
         self.poller.UpdateDatabase()
 
